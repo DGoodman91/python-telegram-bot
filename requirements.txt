@@ -1,0 +1,2 @@
+jproperties
+python-telegram-bot
