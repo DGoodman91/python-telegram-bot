@@ -1,9 +1,9 @@
 from jproperties import Properties
 
 from telegram import Update
-from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler
-import telegram.ext.filters
+from telegram.ext import Application
 
+import routing
 
 configs = Properties()
 with open('app-config.properties', 'rb') as config_file:
@@ -16,36 +16,6 @@ if api_key == None:
 
 app = Application.builder().token(api_key.data).build()
 
-
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text("Yo!")
-
-
-async def help(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text("Some helpful text..")
-
-
-async def unknown_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text(
-        "Sorry I can't recognize you , you said {}".format(update.message.text))
-
-
-async def unknown(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text(
-        "Sorry {} is not a valid command".format(update.message.text))
-
-
-async def whoami(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    user = update.effective_user
-    if user != None:
-        await update.message.reply_text("You are user {0}, {1}".format(user.id, user.full_name))
-    else:
-        print('problem encountered: message recieved with no effective user')
-
-app.add_handler(CommandHandler('start', start))
-app.add_handler(CommandHandler('help', help))
-app.add_handler(CommandHandler('whoami', whoami))
-app.add_handler(MessageHandler(telegram.ext.filters.COMMAND, unknown))
-app.add_handler(MessageHandler(telegram.ext.filters.TEXT, unknown_text))
+routing.add_handlers(app)
 
 app.run_polling()
