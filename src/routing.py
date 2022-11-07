@@ -16,4 +16,5 @@ def add_handlers(app: Application):
                     handlers.unknown_command.handle))
     app.add_handler(MessageHandler(
         telegram.ext.filters.TEXT, handlers.unknown_msg.handle))
-
+    
+    return app
