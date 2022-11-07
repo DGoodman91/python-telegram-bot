@@ -11,7 +11,7 @@ async def alarm(context: ContextTypes.DEFAULT_TYPE) -> None:
     if job == None:
         raise Exception('Cannot create an alarm for an empty job')
 
-    await context.bot.send_message(job.chat_id, text=f"Beep! {job.data} seconds are over!")
+    await context.bot.send_message(job.chat_id, text=job.data)
 
 
 async def handle(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -24,13 +24,41 @@ async def handle(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         return
 
     # first arg should be the time
-    # e.g., 3d, 15m, 30s, 15/11/2022|15:30
-    time_seconds = 60
+    # e.g., 3d, 15m, 30s, 5h30m, 1.5h 15/11/2022|15:30
+    time_seconds = parse_time_arg(context.args[0])
 
-    # second arg should be the text
-    message = 'Testing the reminder blud'
+    # remaining args make up the text
+    message = ' '.join(context.args[1:])
 
     context.job_queue.run_once(
-        alarm, time_seconds, chat_id=update.effective_message.chat_id, name=str(update.effective_message.chat_id), data=time_seconds)
+        alarm, time_seconds,
+        chat_id=update.effective_message.chat_id,
+        name=str(update.effective_message.chat_id),
+        data=message)
 
     await update.message.reply_text("Reminder set!")
+
+    """
+    TODO
+    removereminder functionality (would be easiest if the user is returned a Job ID when they set it)
+    repeating reminders? using the job_queue's run_daily and run_repeating methods https://pythontelegramrobot.readthedocs.io/en/latest/telegram.ext.jobqueue.html
+    """
+
+
+def parse_time_arg(time: str) -> float:
+    """
+    Takes a string representing the user's desired reminder time, and converts it to a seconds count
+
+    Examples:
+    12              Twelve minutes. Plain integers are interpreted as a minute count
+    """
+
+    seconds = 0
+
+    if time == None:
+        raise Exception('Can\'t set a reminder with no time requirement')
+
+    if time.isdigit():
+        seconds = 60 * int(time)
+
+    return seconds
