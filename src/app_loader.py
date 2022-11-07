@@ -4,11 +4,11 @@ from telegram.ext import Application
 from config_loader import ConfigLoader
 import routing
 
+
 class AppLoader():
     """
     A class responsible for initializing and running the application
     """
-
 
     def run(self) -> None:
 
