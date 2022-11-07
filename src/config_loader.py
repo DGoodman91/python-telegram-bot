@@ -30,6 +30,6 @@ class ConfigLoader():
         api_key = configs.get('api_key')
         if api_key == None:
             raise Exception(
-                'API key now found - add to app-config.properties file w/ key \'api_key\'')
+                'API key not found - add to app-config.properties file w/ key \'api_key\'')
 
         return True

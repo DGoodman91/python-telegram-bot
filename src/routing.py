@@ -1,6 +1,7 @@
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 
 import handlers.help
+import handlers.remindme
 import handlers.start
 import handlers.unknown_command
 import handlers.unknown_msg
@@ -17,12 +18,14 @@ class RouterBuilder():
         Attach handlers (BaseHandler instances) to the telegram Application instance
         """
 
-        app.add_handler(CommandHandler('start', handlers.start.handle))
-        app.add_handler(CommandHandler('help', handlers.help.handle))
-        app.add_handler(CommandHandler('whoami', handlers.whoami.handle))
-        app.add_handler(MessageHandler(filters.COMMAND,
-                        handlers.unknown_command.handle))
-        app.add_handler(MessageHandler(
-            filters.TEXT, handlers.unknown_msg.handle))
+        app.add_handlers([CommandHandler('start', handlers.start.handle),
+                          CommandHandler('help', handlers.help.handle),
+                          CommandHandler('remindme', handlers.remindme.handle),
+                          CommandHandler('whoami', handlers.whoami.handle),
+                          MessageHandler(
+                              filters.TEXT, handlers.unknown_msg.handle),
+                          MessageHandler(filters.COMMAND,
+                                         handlers.unknown_command.handle)
+                          ])
 
         return app
