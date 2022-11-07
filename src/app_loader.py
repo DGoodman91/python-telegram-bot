@@ -2,7 +2,7 @@ from telegram import Update
 from telegram.ext import Application
 
 from config_loader import ConfigLoader
-import routing
+from routing import RouterBuilder
 
 
 class AppLoader():
@@ -18,6 +18,6 @@ class AppLoader():
 
         # TODO without the assignment, the code behaves the same but with a problem -
         # the application has a race condition where sometimes it exits immediately
-        app = routing.add_handlers(app)
+        app = RouterBuilder().add_handlers(app)
 
         app.run_polling()
