@@ -1,4 +1,4 @@
-from telegram import Update
+from telegram import BotCommand
 from telegram.ext import Application
 
 from config_loader import ConfigLoader
@@ -13,6 +13,7 @@ class AppLoader():
     async def post_init(self, app: Application) -> None:
         """ Post-initialization function, called before polling starts """
         print("Bot init complete, starting polling...")
+        await app.bot.set_my_commands([BotCommand("remindme", "I'll send you a reminder")])
 
     async def post_shutdown(self, app: Application) -> None:
         """ Shutdown function, use to close e.g., db connections """
