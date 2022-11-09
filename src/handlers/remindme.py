@@ -1,5 +1,7 @@
+import re
 from telegram import Update
 from telegram.ext import ContextTypes
+from telegram.constants import ParseMode
 
 
 async def alarm(context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -20,7 +22,9 @@ async def handle(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         raise Exception('Unexpected error - message received with no context')
 
     if context.args != None and (len(context.args) == 0 or context.args[0] == 'help'):
-        await update.message.reply_text('TODO helpful text explaining the remindme command! :D')
+        await update.message.reply_text("Use the <b>/remindme</b> command to have me send you reminders at a specific time \
+                \n      /remindme 30 Dinner's ready! -- <i>Send the <b>Dinner's ready!</b> message in 30 minutes</i>",
+                                        parse_mode=ParseMode.HTML)
         return
 
     # first arg should be the time
@@ -60,5 +64,10 @@ def parse_time_arg(time: str) -> float:
 
     if time.isdigit():
         seconds = 60 * int(time)
+
+    exp = re.compile('[a-zA-Z]')
+    letters = exp.findall(time)
+    if letters == None or len(letters) == 0:
+        """ We're either working with an expression like 5h10m or we have an invalid string """
 
     return seconds

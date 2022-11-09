@@ -1,2 +1,2 @@
 jproperties
-python-telegram-bot==20.0a4
+python_telegram_bot==20.0a4
